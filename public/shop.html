@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop All Products — AURA</title>
+  <meta name="description" content="Browse our complete catalog of high quality electronics, fashion, accessories, and home goods with filters and search.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="brand-logo">AURA<span class="dot">.</span></a>
+      
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="shop.html" class="nav-link active">Shop</a></li>
+        <li><a href="shop.html?category=Electronics" class="nav-link">Electronics</a></li>
+        <li><a href="shop.html?category=Fashion" class="nav-link">Fashion</a></li>
+        <li><a href="shop.html?category=Home%20%26%20Lifestyle" class="nav-link">Lifestyle</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div id="nav-auth-container">
+          <a href="login.html" class="btn btn-dark btn-sm">Login</a>
+        </div>
+
+        <a href="cart.html" class="cart-icon-btn" title="View Shopping Cart" aria-label="View Shopping Cart">
+          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+          </svg>
+          <span id="cart-badge" class="cart-badge">0</span>
+        </a>
+
+        <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">☰</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container section">
+    <div style="margin-bottom: 2rem;">
+      <h1>Explore Products</h1>
+      <p class="text-muted">Discover our complete collection of curated goods.</p>
+    </div>
+
+    <div class="shop-layout">
+      <!-- Left: Filter Sidebar -->
+      <aside class="filter-sidebar">
+        <div class="filter-group">
+          <div class="filter-title">Categories</div>
+          <ul class="category-filter-list">
+            <li><button class="filter-btn active" data-category="All">All Products</button></li>
+            <li><button class="filter-btn" data-category="Electronics">Electronics</button></li>
+            <li><button class="filter-btn" data-category="Fashion">Fashion</button></li>
+            <li><button class="filter-btn" data-category="Accessories">Accessories</button></li>
+            <li><button class="filter-btn" data-category="Home & Lifestyle">Home & Lifestyle</button></li>
+          </ul>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">Price Range (₹)</div>
+          <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem;">
+            <input type="number" id="min-price" placeholder="Min" style="width: 100%; padding: 0.4rem 0.6rem; border: 1px solid var(--color-border); border-radius: 4px; font-size: 0.85rem;">
+            <span>-</span>
+            <input type="number" id="max-price" placeholder="Max" style="width: 100%; padding: 0.4rem 0.6rem; border: 1px solid var(--color-border); border-radius: 4px; font-size: 0.85rem;">
+          </div>
+          <button id="apply-price-filter" class="btn btn-outline btn-sm btn-full">Apply Price Filter</button>
+        </div>
+      </aside>
+
+      <!-- Right: Product Grid & Controls -->
+      <div>
+        <div class="shop-toolbar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="shop-search" placeholder="Search products...">
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <span id="shop-results-count" class="text-muted text-small">Showing products</span>
+            <select id="shop-sort" class="sort-select">
+              <option value="featured">Sort: Featured</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+              <option value="rating">Highest Rated</option>
+              <option value="newest">Newest Arrivals</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="shop-products-grid" class="products-grid">
+          <!-- Dynamically loaded via shop.js -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border: none; padding-top: 0;">
+        <div>© 2026 AURA Inc. All rights reserved.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/shop.js"></script>
+</body>
+</html>

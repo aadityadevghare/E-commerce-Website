@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmation — AURA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="brand-logo">AURA<span class="dot">.</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="shop.html" class="nav-link">Shop</a></li>
+      </ul>
+      <div class="nav-actions">
+        <div id="nav-auth-container"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container section">
+    <div id="confirmation-container" style="max-width: 680px; margin: 0 auto;">
+      <div class="empty-state">
+        <p class="text-muted">Loading order confirmation...</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border: none; padding-top: 0;">
+        <div>© 2026 AURA Inc. All rights reserved.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/3d-tracking.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const container = document.getElementById('confirmation-container');
+      const params = new URLSearchParams(window.location.search);
+      const orderId = params.get('id');
+
+      if (!orderId) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      try {
+        const res = await API.getOrderById(orderId);
+        const order = res.order;
+
+        const dateStr = new Date(order.created_at).toLocaleDateString('en-US', {
+          year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        container.innerHTML = `
+          <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 3rem 2.5rem; text-align: center; box-shadow: var(--shadow-md);">
+            <div style="width: 72px; height: 72px; border-radius: 50%; background: #dcfce7; color: var(--color-success); font-size: 2.2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+              ✓
+            </div>
+
+            <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">Order Placed Successfully!</h1>
+            <p class="text-muted" style="font-size: 1.05rem; margin-bottom: 2rem;">
+              Thank you for your purchase. We have received your order and are preparing it for express shipping.
+            </p>
+
+            <div style="background: var(--color-bg); padding: 1.25rem 1.5rem; border-radius: var(--radius-md); text-align: left; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <div class="text-muted text-small">Order Reference</div>
+                <div style="font-weight: 700; font-size: 1.1rem;">#${order.id}</div>
+              </div>
+              <div>
+                <div class="text-muted text-small">Date</div>
+                <div style="font-weight: 600;">${dateStr}</div>
+              </div>
+              <div>
+                <div class="text-muted text-small">Total Paid</div>
+                <div style="font-weight: 700; font-size: 1.1rem; color: var(--color-action);">₹${order.total_amount.toLocaleString('en-IN')}</div>
+              </div>
+              <div>
+                <span class="status-badge status-confirmed">${escapeHtml(order.status)}</span>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+              <button class="btn btn-primary btn-lg btn-full" onclick="open3DTrackingModal(${order.id}, '${escapeHtml(order.shipping_city)}', '${escapeHtml(order.shipping_country)}')">
+                🛰️ Track Package Route on 3D Map
+              </button>
+            </div>
+
+            <div style="text-align: left; margin-bottom: 2rem;">
+              <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Ordered Items</h3>
+              <div style="display: flex; flex-direction: column; gap: 0.75rem; border-bottom: 1px solid var(--color-border); padding-bottom: 1rem;">
+                ${order.items ? order.items.map(item => `
+                  <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                      <img src="${item.image_url}" style="width: 44px; height: 44px; border-radius: 6px; object-fit: cover;">
+                      <div>
+                        <div style="font-weight: 600;">${escapeHtml(item.name)}</div>
+                        <div class="text-muted text-small">Qty: ${item.quantity} × ₹${item.price.toLocaleString('en-IN')}</div>
+                      </div>
+                    </div>
+                    <div style="font-weight: 600;">₹${(item.quantity * item.price).toLocaleString('en-IN')}</div>
+                  </div>
+                `).join('') : ''}
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+              <a href="account.html" class="btn btn-outline btn-lg">View in Account</a>
+              <a href="shop.html" class="btn btn-primary btn-lg">Continue Shopping</a>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <h3>Unable to find order</h3>
+            <a href="shop.html" class="btn btn-primary">Return to Shop</a>
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>

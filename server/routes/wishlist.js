@@ -1,0 +1,10 @@
+const express = require('express');
+const router = express.Router();
+const wishlistController = require('../controllers/wishlistController');
+const { authenticateToken } = require('../middleware/auth');
+
+router.get('/', authenticateToken, wishlistController.getWishlist);
+router.post('/toggle', authenticateToken, wishlistController.toggleWishlist);
+router.get('/check/:productId', authenticateToken, wishlistController.checkWishlist);
+
+module.exports = router;
